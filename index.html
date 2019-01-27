@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+        crossorigin="anonymous">
+    <script src="https://rawgit.com/moment/moment/2.2.1/min/moment.min.js"></script>
+    <title>Train Schedule</title>
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="jumbotron text-center">
+                    <h3 class="display-4">The Rubyon Railroad</h3>
+                    <h5>Train Schedule</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-9 p-2">
+                <table class="table table-borderless">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Train Name</th>
+                            <th scope="col">Destination</th>
+                            <th scope="col">Frequency</th>
+                            <th scope="col">Next Arrival</th>
+                            <th scope="col">Minutes Away</th>
+                            <th scope="col">Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-3 p-2">
+                <form>
+                    <div class="col">
+                        <h5>Add Train</h5>
+                    </div>
+                    <div class="form-group">
+                        <label for="train-name">Train Name</label>
+                        <input class="form-control" id="train-name" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label for="train-destination">Destination</label>
+                        <input class="form-control" id="train-destination" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label for="startYear">First Train Time: (military time) </label>
+                        <input type="text" class="form-control" placeholder="HH:MM" id="train-start">
+                    </div>
+                    <div class="form-group">
+                        <label for="train-frequency">Frequency (min)</label>
+                        <input class="form-control" id="train-frequency" type="number">
+                    </div>
+                    <button class="btn btn-primary float-right" id="submit-employee" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase.js"></script>
+    <script type="text/javascript">
+
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyDcHbfsQ6yYxOl6GGvwcVqyjiefa-aStP8",
+            authDomain: "my-train-scheduler-c17cb.firebaseapp.com",
+            databaseURL: "https://my-train-scheduler-c17cb.firebaseio.com",
+            projectId: "my-train-scheduler-c17cb",
+            storageBucket: "",
+            messagingSenderId: "1091439494563"
+        };
+        firebase.initializeApp(config);
+        // initializing variables
+
+        var trainName = "";
+        var trainDestination = "";
+        var trainStart = "";
+        var trainFrequency = "";
+        var database = firebase.database();
+
+        // on submit button click event
+        $('#submit-employee').on('click', function (event) {
+            event.preventDefault();
+            trainName = $('#train-name').val().trim();
+            trainDestination = $('#train-destination').val().trim();
+            trainStart = $('#train-start').val();
+            trainFrequency = $('#train-frequency').val();
+
+            database.ref().push({
+                trainName: trainName,
+                trainDestination: trainDestination,
+                trainStart: trainStart,
+                trainFrequency: trainFrequency,
+                dateAdded: firebase.database.ServerValue.TIMESTAMP
+            });
+            // resets the input fields to empty
+            $('#train-name').val('');
+            $('#train-destination').val('');
+            $('#train-start').val('');
+            $('#train-frequency').val('');
+        });
+
+        database.ref().on('child_added', function (childSnapshot) {
+
+            var startTimeConverted = moment(childSnapshot.val().trainStart, "hh:mm").subtract(1, "years");
+            var timeDiff = moment().diff(moment(startTimeConverted), "minutes");
+            var timeRemain = timeDiff % childSnapshot.val().trainFrequency;
+            var minToArrival = childSnapshot.val().trainFrequency - timeRemain;
+            var nextTrain = moment().add(minToArrival, "minutes");
+            var key = childSnapshot.key;
+
+            $("tbody").append(
+                `<tr class="newRow">
+                <td> ${childSnapshot.val().trainName} </td>
+                <td> ${childSnapshot.val().trainDestination} </td>
+                <td> ${childSnapshot.val().trainFrequency} </td>
+                <td> ${moment(nextTrain).format("LT")} </td>
+                <td> ${minToArrival} </td>
+                <td class='text-center'><button class='arrival btn btn-danger btn-xs' data-key=${key}>X</button></td>));
+                </tr>`
+            );
+        });
+
+        $(document).on("click", ".arrival", function () {
+            keyGrab = $(this).attr("data-key");
+            database.ref().child(keyGrab).remove();
+            window.location.reload();
+        });
+
+
+
+
+    </script>
+</body>
+
+</html>
