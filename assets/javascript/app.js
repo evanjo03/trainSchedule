@@ -1,5 +1,6 @@
- // Initialize Firebase
- var config = {
+
+// Initialize Firebase
+var config = {
     apiKey: "AIzaSyDcHbfsQ6yYxOl6GGvwcVqyjiefa-aStP8",
     authDomain: "my-train-scheduler-c17cb.firebaseapp.com",
     databaseURL: "https://my-train-scheduler-c17cb.firebaseio.com",
@@ -48,15 +49,13 @@ database.ref().on('child_added', function (childSnapshot) {
     var key = childSnapshot.key;
 
     $("tbody").append(
-        `<tr class="newRow">
-        <td> ${childSnapshot.val().trainName} </td>
-        <td> ${childSnapshot.val().trainDestination} </td>
-        <td> ${childSnapshot.val().trainFrequency} </td>
-        <td> ${moment(nextTrain).format("LT")} </td>
-        <td> ${minToArrival} </td>
-        <td class='text-center'><button class='arrival btn btn-danger btn-xs' data-key=${key}>X</button></td>));
-        </tr>`
-    );
+        "<tr class='newRow'>" +
+        "<td>" + childSnapshot.val().trainName + "</td>" +
+        "<td>" + childSnapshot.val().trainDestination + "</td>" +
+        "<td>" + childSnapshot.val().trainFrequency + "</td>" +
+        "<td>" + moment(nextTrain).format("LT") + "</td>" +
+        "<td>" + minToArrival + "</td>" +
+        "<td class='text-center'><button class='arrival btn btn-danger btn-xs' data-key='" + key + "' >X</button></td></tr>");
 });
 
 $(document).on("click", ".arrival", function () {
@@ -64,4 +63,6 @@ $(document).on("click", ".arrival", function () {
     database.ref().child(keyGrab).remove();
     window.location.reload();
 });
+
+
 
