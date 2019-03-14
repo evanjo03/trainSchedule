@@ -1,15 +1,15 @@
 # Train Scheduler
-Week 10 Assignment: trainSchedule
+
  
-## Train Scheduler
-Created during Week 10 of University of Minnesota Coding Bootcamp. The project made use of dynamic jQuery buttons and elements, but focused on the use of Google's software platform, Firebase.  We used Firebase real-time database to store train data, and used moment.js to manipulate relative departure times
- 
+The application made use of dynamic jQuery buttons and elements, but focused on the use of Google's software platform, Firebase.  I used Firebase real-time database to store train data, and used moment.js to manipulate relative departure times based on what the user entered.
+
+Moment.js was initially quite difficult to understand how to use effectively, but luckily is very well-documented!
  
 
 ## Built With
 * Bootstrap framework
-*Firebase
-*moment.js
+* Firebase
+* moment.js
 * jQuery
 * Visual Basic - Text Editor
  
