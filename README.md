@@ -5,6 +5,8 @@ The application made use of dynamic jQuery buttons and elements, but focused pri
 
 Moment.js was initially quite difficult to understand how to use effectively, but luckily is very well-documented!
  
+## Deployment
+* https://evanjo03.github.io/trainSchedule/
 
 ## Built With
 * Bootstrap framework
