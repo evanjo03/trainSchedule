@@ -1,5 +1,4 @@
 # Train Scheduler
-
  
 The application made use of dynamic jQuery buttons and elements, but focused primarily on the use of Google's software platform, Firebase.  I used Firebase real-time database to store train data, and used moment.js to manipulate relative departure times based on what the user entered.
 
